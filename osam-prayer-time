@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prayer Times</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #666; /* Add your image URL here */
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff; /* Text color on top of the background image */
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        table {
+            width: 50%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        #current-time {
+            font-size: 18px;
+            margin-top: 10px;
+            color: #fff; /* Text color for the current time */
+        }
+
+        #countdown-timer {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Prayer Times</h1>
+
+    <div id="current-time"></div>
+    <div id="countdown-timer"></div>
+
+    <table>
+        <tr>
+            <th>Prayer</th>
+            <th>Time</th>
+        </tr>
+        <tr>
+            <td>Fajr</td>
+            <td>6:30 am</td>
+        </tr>
+        <tr>
+            <td>Shurooq</td>
+            <td>7:30 am</td>
+        </tr>
+        <tr>
+            <td>Zohar</td>
+            <td>1:00 pm</td>
+        </tr>
+        <tr>
+            <td>Asr</td>
+            <td>3:30 pm</td>
+        </tr>
+        <tr>
+            <td>Maghrib</td>
+            <td>5:00 pm</td>
+        </tr>
+        <tr>
+            <td>Isha</td>
+            <td>7:35 pm</td>
+        </tr>
+    </table>
+
+    <script>
+        function updateCurrentTime() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            const formattedTime = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+            document.getElementById("current-time").innerHTML = `Current Time: ${formattedTime}`;
+        }
+
+        function updateCountdownTimer(nextPrayerTime) {
+            const now = new Date();
+            const remainingMillis = nextPrayerTime - now;
+
+            const remainingHours = Math.floor(remainingMillis / (1000 * 60 * 60));
+            const remainingMinutes = Math.floor((remainingMillis % (1000 * 60 * 60)) / (1000 * 60));
+            const remainingSeconds = Math.floor((remainingMillis % (1000 * 60)) / 1000);
+
+            document.getElementById("countdown-timer").innerHTML = `Time until next prayer: ${remainingHours}h ${remainingMinutes}m ${remainingSeconds}s`;
+        }
+
+        // Prayer times
+        const fajrTime = new Date();
+        fajrTime.setHours(6, 30, 0, 0);
+
+        const shurooqTime = new Date();
+        shurooqTime.setHours(7, 30, 0, 0);
+
+        const zoharTime = new Date();
+        zoharTime.setHours(13, 0, 0, 0);
+
+        const asrTime = new Date();
+        asrTime.setHours(15, 30, 0, 0);
+
+        const maghribTime = new Date();
+        maghribTime.setHours(17, 0, 0, 0);
+
+        const ishaTime = new Date();
+        ishaTime.setHours(19, 35, 0, 0);
+
+        // Update current time and countdown timer every second
+        setInterval(function() {
+            updateCurrentTime();
+            updateCountdownTimer(getNextPrayerTime());
+        }, 1000);
+
+        // Initial update for current time and countdown timer
+        updateCurrentTime();
+        updateCountdownTimer(getNextPrayerTime());
+
+        function getNextPrayerTime() {
+            const currentTime = new Date();
+            const prayerTimes = [fajrTime, shurooqTime, zoharTime, asrTime, maghribTime, ishaTime];
+            
+            for (const prayerTime of prayerTimes) {
+                if (currentTime < prayerTime) {
+                    return prayerTime;
+                }
+            }
+
+            // If all prayers are over, return the next day's Fajr time
+            const nextDayFajr = new Date(fajrTime);
+            nextDayFajr.setDate(nextDayFajr.getDate() + 1);
+            return nextDayFajr;
+        }
+    </script>
+
+</body>
+</html>
